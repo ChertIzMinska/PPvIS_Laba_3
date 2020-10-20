@@ -1,0 +1,9 @@
+Enter the PIN from your card.
+Error PIN code is incorrect.
+Choose an action with your card.
+0. Withdrawal of money.
+1. Money transfer.
+Enter your card number and expiration date.
+Enter the amount you want to withdraw.
+Indicate the amount of money to transfer.
+Not enough money.
