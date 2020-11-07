@@ -88,6 +88,8 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <PrecompiledHeaderFile>Header.h</PrecompiledHeaderFile>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -139,10 +141,18 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="Header.h" />
+    <ClInclude Include="Card.h" />
+    <ClInclude Include="Card_Account.h" />
+    <ClInclude Include="Screen_and_Session.h" />
+    <ClInclude Include="Reader.h" />
+    <ClInclude Include="User.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Another_Functions.cpp" />
+    <ClCompile Include="Funcs_Card.cpp" />
+    <ClCompile Include="Funcs_Card_Account.cpp" />
+    <ClCompile Include="Funcs_Reader.cpp" />
+    <ClCompile Include="Funcs_User.cpp" />
     <ClCompile Include="Function_Screens.cpp" />
     <ClCompile Include="Source.cpp" />
   </ItemGroup>

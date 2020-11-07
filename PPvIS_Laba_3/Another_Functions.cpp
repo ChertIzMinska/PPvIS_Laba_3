@@ -1,152 +1,38 @@
-#include"Header.h"
+#include "Reader.h"
+#include "Card_Account.h"
 using namespace std;
 extern vector<string> languages;
+int _String_into_int(string string);
 extern vector<Card_Account> base;
-void Card_Account::_Set_User(User& owner)
+pair<int,int>find_card_owner();
+void create_account(User& users, vector<Card>& all_cards);
+bool check_correct_card(string &Number_card)
 {
-	this->Owner = owner;
-}
-void Card_Account::_Set_cards(vector<Card>& cards)
-{
-	this->cards = cards;
-}
-Card_Account::Card_Account(User& owner, vector<Card>& cards)
-{
-	_Set_User(owner);
-	_Set_cards(cards);
-}
-User Card_Account::_Get_User()
-{
-	return Owner;
-}
-vector<Card>Card_Account::_Get_Cards()
-{
-	return cards;
-}
-void User::_Set_First_Name(string& First_Name)
-{
-	this->First_Name = First_Name;
-}
-void User::_Set_Last_Name(string& Last_Name)
-{
-	this->Last_Name = Last_Name;
-}
-void User::_Set_years(string& years)
-{
-	this->years = years;
-}
-void Card::_Set_Number(string& Number)
-{
-	this->Number = Number;
-}
-void Card::_Set_PIN_CODE(string& PIN_CODE)
-{
-	this->PIN_CODE = PIN_CODE;
-}
-void Card::_Set_validty(string& validty)
-{
-	this->validity = validity;
-}
-string Card::_Get_PIN_CODE()
-{
-	return PIN_CODE;
-}
-void Card_Account::_Change_Sum_Money(int number,int sum)
-{
-	cards[0]._Set_money(cards[0]._Get_Money() - sum);
-}
-void Read::_Read()
-{
-	Session session;
-	vector<Card>all_cards;
-	User user;
-
-
-	_Read_Card(all_cards);
-	_Read_Account(user);
-
-	Card_Account Is(user, all_cards);
-
-	session._Start_Session(Is);
-}
-void Read::_Read_Language(bool& Is_English)
-{
-	
-	string buff;
-	if (Is_English) {
-		file.open("D:/Project_Microsoft_Visual_Soft/PPvIS_Laba_3/English.txt");
-	}
-	else {
-		
-		
-
-		file.open("D:/Project_Microsoft_Visual_Soft/PPvIS_Laba_3/Russian.txt");
-		
-	}
-	while (getline(file, buff))
+	int arr[3] = { 16,3};
+	for (int i = 0; i < Number_card.size(); i++)
 	{
-		
-		languages.push_back(buff);
-		
+		if (Number_card[i] == '-')
+		{
+			arr[1]--;
+			
+		}
+		else if (Number_card[i] == '1' || Number_card[i] == '2'|| Number_card[i] == '3'|| Number_card[i] == '4'|| Number_card[i] == '5'|| Number_card[i] == '6'|| Number_card[i] == '7'|| Number_card[i] == '8'|| Number_card[i] == '9'|| Number_card[i] == '0')
+		{
+			arr[0]--;
+		}
+		else {
+			return 0;
+		}
+
+
 		
 	}
-		
+	if (arr[0] != 0)
+		return 0;
+	if (arr[1] != 0)
+		return 0;
 
-	file.close();
-}
-void Read::_Read_Card(vector<Card>& all_cards)
-{
-
-	string buffer;
-
-	file.open("D:/Project_Microsoft_Visual_Soft/PPvIS_Laba_3/Card.txt");
-
-	while (!file.eof())
-	{
-		Card temp;
-
-		file >> buffer;
-		temp._Set_Number(buffer);
-
-		file >> buffer;
-		temp._Set_PIN_CODE(buffer);
-
-		file >> buffer;
-		temp._Set_validty(buffer);
-		file >> buffer;
-		temp._Set_money(_String_into_int(buffer));
-
-
-		all_cards.push_back(temp);
-
-	}
-
-	file.close();
-
-
-
-}
-void Read::_Read_Account(User& user)
-{
-	string buff;
-
-	file.open("D:/Project_Microsoft_Visual_Soft/PPvIS_Laba_3/User.txt");
-
-	while (!file.eof())
-	{
-		file >> buff;
-		user._Set_First_Name(buff);
-
-		file >> buff;
-		user._Set_Last_Name(buff);
-
-		file >> buff;
-		user._Set_years(buff);
-		
-		file >> buff;
-		_Read_Card();
-
-	}
+	return 1;
 }
 int _String_into_int(string string)
 {
@@ -156,4 +42,55 @@ int _String_into_int(string string)
 		res += (int(string[i]) - 48) * pow(10, string.size()-i-1);
 	}
 	return res;
+}
+void create_account(User& users, vector<Card>& all_cards)
+{
+	Card_Account Is(users, all_cards);
+	base.push_back(Is);
+}
+void Session::_Start_Session()
+{
+	pair<int,int> owner = find_card_owner();
+	Screen* screen = new Screen_Languages;
+	_Use_Screen(*screen, owner);
+	screen = new Screen_PIN_CODE;
+	_Use_Screen(*screen, owner);
+	screen = new Screen_Choose_Operation;
+	_Use_Screen(*screen, owner);
+}
+pair<int,int> find_card_owner()
+{
+	string Number_card;
+	try
+	{
+		cin >> Number_card;
+		if (!check_correct_card(Number_card))
+			throw "totally incorrect card entry.";
+		
+	}
+	catch (const string &str)
+	{
+		cout << str<<endl;
+		cout << "Example of correct card : 5578 - 2312 - 2212 - 5554." << endl;
+		return find_card_owner();
+		
+	}
+	
+
+	for (int g=0;g<base.size();g++)
+	{
+		Card_Account ch = base[g];
+		for (int i = 0; i < ch._Get_Cards().size(); i++)
+		{
+			if (Number_card == ch._Get_Cards()[i]._Get_Number())
+			{
+				pair<int, int> res;
+				res.first = g;
+				res.second = i;
+				return res;
+			}
+		}
+	}
+	find_card_owner();
+	
 }
